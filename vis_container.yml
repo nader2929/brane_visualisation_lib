@@ -1,0 +1,97 @@
+name: visualisation
+version: 1.0.0
+kind: ecu
+base: python:3.9-slim-buster
+
+entrypoint:
+  kind: task
+  exec: visualisation.py
+
+install:
+#  - apk add build-base
+  - pip3 install pyyaml numpy pandas seaborn sklearn
+
+dependencies:
+  #- python3
+
+files:
+  - visualisation.py
+  - preprocessing.py
+  - parameters.py
+actions:
+  pie_plot_column:
+    command:
+      args:
+        - pie_plot_column
+    input:
+      - name: column
+        type: string
+      - name: data_path
+        type: string
+    output:
+      - name: resultOutput
+        type: string
+
+  pie_plot_column_with_filter:
+    command:
+      args:
+        - pie_plot_column_with_filter
+    input:
+      - name: column
+        type: string
+      - name: filter_column
+        type: string
+      - name: data_path
+        type: string
+      - name: legend
+        type: boolean
+    output:
+      - name: resultOutput
+        type: string
+
+  scatter_plot_in_relation_to_column:
+    command:
+      args:
+        - scatter_plot_in_relation_to_column
+    input:
+      - name: column
+        type: string
+      - name: group_by_column
+        type: string
+      - name: data_path
+        type: string
+      - name: alpha
+        type: real
+    output:
+      - name: resultOutput
+        type: string
+
+  histogram_plot:
+    command:
+      args:
+        - histogram_plot
+    input:
+      - name: column
+        type: string
+      - name: data_path
+        type: string
+      - name: hue_column
+        type: string
+    output:
+      - name: resultOutput
+        type: string
+
+  line_plot:
+    command:
+      args:
+        - line_plot
+    input:
+      - name: x_column
+        type: string
+      - name: y_column
+        type: string
+      - name: data_path
+        type: string
+    output:
+      - name: resultOutput
+        type: string
