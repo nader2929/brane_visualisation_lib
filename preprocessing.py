@@ -25,6 +25,21 @@ seaborn.set_style("whitegrid")
 colours = seaborn.color_palette("pastel")
 rcParams['figure.figsize'] = 15,10
 
+def drop_columns(columns_to_drop, data_path : str = ""):
+    global data
+    # print(string_columns)
+    if(data_path != ""):
+        setup_data_with_path(data_path)
+    if type(columns_to_drop) is not list:
+        columns_to_drop = ast.literal_eval(f"{columns_to_drop}")
+
+    data.drop(columns=columns_to_drop, inplace=True)
+
+    data.to_csv(data_path.replace('.csv', '_red.csv'), index=False)
+
+    return f"Results saved to file: {data_path.replace('.csv', '_red.csv')}, in data directory"
+
+
 def analyse_column(column : str, printMessages : bool=False, data_path : str = "", data_path_dst:str=""):
     global data
     if(data_path != ""):
@@ -98,7 +113,6 @@ def replace_string_values(string_columns, data_path : str = ""):
         setup_data_with_path(data_path)
     if type(string_columns) is not list:
         string_columns = ast.literal_eval(f"{string_columns}")
-    global data
     for col in string_columns:
         values_set = set(data[col].values)        
         for i, v in enumerate(values_set):
@@ -187,6 +201,7 @@ if __name__ == "__main__":
         "analyse_column": Parameters(analyse_column, 1, ["COLUMN"], 2, [("PRINTMESSAGES", False), ("DATA_PATH", "")]),
         "analyse_column_with_filter": Parameters(analyse_column_with_filter, 2, ["COLUMN", "FILTER_COLUMN"], 2, [("PRINTMESSAGES", False), ("DATA_PATH", "")]),
         "replace_string_values": Parameters(replace_string_values, 1, ["STRING_COLUMNS"], 1, [("DATA_PATH", "")]),
+        "drop_columns": Parameters(drop_columns, 1, ["COLUMNS_TO_DROP"], 1, [("DATA_PATH", "")]),
         "train_and_test_classifier": Parameters(train_and_test_classifier, 3, ["TARGET_COLUMN", "TEST_SIZE", "MODEL_TYPE"], 3, [("EXCLUDE_FIRST_COLUMN", True), ("REPLACE_STRINGS", True), ("DATA_PATH", "")]),
         "load_classifier_and_predict": Parameters(load_classifier_and_predict, 3, ["MODEL_PATH", "PREDICT_DATA_PATH"], 3, [("PREDICTION_COLUMN_NAME", ""), ("REPLACE_STRINGS", True), ("USE_FIRST_COLUMN_AS_INDEX", True)])
     }
